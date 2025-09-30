@@ -1,0 +1,20 @@
+services:
+  # Set up the elasticsearch installation.
+  elasticsearch:
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.8
+    restart: unless-stopped
+    volumes:
+      - ../../elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ../../.docker/elasticsearch/entrypoints/:/entrypoints/
+      - ../../.docker/entrypoint:/entrypoint
+    environment:
+      - discovery.type=single-node
+      - network.host=0.0.0.0
+      - http.port=9200
+      - xpack.security.enabled=true
+      - ELASTIC_PASSWORD=${ELASTICSEARCH_PASS}
+      - ELASTICSEARCH_RAPIDEZ_PASS=${ELASTICSEARCH_RAPIDEZ_PASS}
+    command: ['/entrypoint', 'bash /usr/local/bin/docker-entrypoint.sh']
+    networks:
+      - default
